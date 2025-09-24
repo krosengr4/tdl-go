@@ -53,7 +53,7 @@ func main() {
 		case 3:
 			viewAllTasks()
 		case 4:
-			viewAllCompleted()
+			viewAllUnfinihsed()
 		case 0:
 			fmt.Println("Goodbye!")
 			ifContinue = false
@@ -84,7 +84,6 @@ func checkOffTask() {
 
 func viewAllTasks() {
 
-	var allTasks []*userinterface.Todo
 	allTasks, err := db.GetAllTasks()
 	if err != nil {
 		fmt.Println("Error recieving tasks:", err)
@@ -111,6 +110,26 @@ func viewAllTasks() {
 
 }
 
-func viewAllCompleted() {
-	fmt.Println("View all completed tasks")
+func viewAllUnfinihsed() {
+
+	allUnfinished, err := db.GetAllTodos()
+	if err != nil {
+		fmt.Println("Error getting all unfinished tasks:", err)
+		return
+	}
+
+	if len(allUnfinished) == 0 {
+		fmt.Println("You have no unfinished tasks!")
+		return
+	}
+
+	for i, task := range allUnfinished {
+		status := "❌ Pending"
+
+		fmt.Printf("---TASK %d---\n", i+1)
+		fmt.Println("Description:", task.Description)
+		fmt.Println("Due Date:", task.DueDate)
+		fmt.Println("Status:", status)
+		fmt.Println(strings.Repeat("_", 20))
+	}
 }
