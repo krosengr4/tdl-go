@@ -53,8 +53,10 @@ func main() {
 		case 3:
 			viewAllTasks()
 		case 4:
-			viewAllPending()
+			viewByStatus(0)
 		case 5:
+			viewByStatus(1)
+		case 6:
 			deleteTask()
 		case 0:
 			fmt.Println("Goodbye!")
@@ -81,7 +83,7 @@ func addNewTask() {
 }
 
 func checkOffTask() {
-	viewAllPending()
+	viewByStatus(0)
 	fmt.Println("\n" + strings.Repeat("_", 45))
 
 	fmt.Println("Enter the ID of the task you have completed:")
@@ -109,8 +111,8 @@ func viewAllTasks() {
 	printData(allTasks)
 }
 
-func viewAllPending() {
-	allUnfinished, err := db.GetAllPending()
+func viewByStatus(status int) {
+	allUnfinished, err := db.GetByStatus(status)
 	if err != nil {
 		fmt.Println("Error getting all unfinished tasks:", err)
 		return

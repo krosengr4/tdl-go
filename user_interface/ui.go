@@ -13,7 +13,7 @@ func DisplayMain() int {
 	fmt.Println(strings.Repeat("_", 50))
 	fmt.Println("\n---OPTIONS---")
 	fmt.Println(strings.Repeat("_", 20))
-	fmt.Println("1 - Add A New Task\n2 - Check Off A Task\n3 - View All Tasks\n4 - View All Pending Tasks\n5 - Delete A Task\n0 - Exit")
+	fmt.Println("1 - Add A New Task\n2 - Check Off A Task\n3 - View All Tasks\n4 - View All Pending Tasks\n5 - View All Completed Tasks\n6 - Delete A Task\n0 - Exit")
 
 	fmt.Println("Enter option:")
 	var userChoice int

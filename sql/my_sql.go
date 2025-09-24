@@ -54,10 +54,10 @@ func (d *Database) GetAllTasks() ([]*userinterface.Todo, error) {
 	return tasks, nil
 }
 
-func (d *Database) GetAllPending() ([]*userinterface.Todo, error) {
-	query := "SELECT * FROM tasks WHERE completed = 0 ORDER BY due_date ASC;"
+func (d *Database) GetByStatus(status int) ([]*userinterface.Todo, error) {
+	query := "SELECT * FROM tasks WHERE completed = ? ORDER BY due_date ASC;"
 
-	rows, err := d.conn.Query(query)
+	rows, err := d.conn.Query(query, status)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query tasks: %w", err)
 	}
