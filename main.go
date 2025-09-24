@@ -53,7 +53,7 @@ func main() {
 		case 3:
 			viewAllTasks()
 		case 4:
-			viewAllUnfinihsed()
+			viewAllPending()
 		case 0:
 			fmt.Println("Goodbye!")
 			ifContinue = false
@@ -110,9 +110,9 @@ func viewAllTasks() {
 
 }
 
-func viewAllUnfinihsed() {
+func viewAllPending() {
 
-	allUnfinished, err := db.GetAllTodos()
+	allUnfinished, err := db.GetAllPending()
 	if err != nil {
 		fmt.Println("Error getting all unfinished tasks:", err)
 		return

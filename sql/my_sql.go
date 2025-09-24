@@ -44,7 +44,7 @@ func (d *Database) AddTask(task *userinterface.Todo) error {
 
 }
 
-func (d *Database) GetAllTodos() ([]*userinterface.Todo, error) {
+func (d *Database) GetAllPending() ([]*userinterface.Todo, error) {
 	query := "SELECT description, completed, due_date FROM tasks WHERE completed = 0 ORDER BY due_date ASC;"
 
 	rows, err := d.conn.Query(query)
