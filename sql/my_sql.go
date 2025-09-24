@@ -44,9 +44,26 @@ func (d *Database) AddTask(task *userinterface.Todo) error {
 
 }
 
-// func (d *Database) UpdateTaskCompletion(description string) error {
+func (d *Database) UpdateTaskCompletion(taskId int) error {
+	query := "UPDATE tasks SET completed = 1 WHERE task_id = ? AND completed = 0;"
 
-// }
+	result, err := d.conn.Exec(query, taskId)
+	if err != nil {
+		return fmt.Errorf("failed to update task: %w", err)
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	if rows == 0 {
+		return fmt.Errorf("no incomplete task found with ID: %d", taskId)
+	}
+
+	fmt.Println("Task marked as completed!")
+	return nil
+}
 
 func (d *Database) GetAllPending() ([]*userinterface.Todo, error) {
 	query := "SELECT * FROM tasks WHERE completed = 0 ORDER BY due_date ASC;"
