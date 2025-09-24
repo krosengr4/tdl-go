@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"strings"
 	"tdl-go/config"
 	database "tdl-go/sql"
 	userinterface "tdl-go/user_interface"
@@ -82,7 +83,32 @@ func checkOffTask() {
 }
 
 func viewAllTasks() {
-	fmt.Println("View all tasks")
+
+	var allTasks []*userinterface.Todo
+	allTasks, err := db.GetAllTasks()
+	if err != nil {
+		fmt.Println("Error recieving tasks:", err)
+		return
+	}
+
+	if len(allTasks) == 0 {
+		fmt.Println("No tasks found...")
+		return
+	}
+
+	for i, task := range allTasks {
+		status := "❌ Pending"
+		if task.Completed {
+			status = "✅ Completed"
+		}
+
+		fmt.Printf("---TASK %d---\n", i+1)
+		fmt.Println("Description:", task.Description)
+		fmt.Println("Due Date:", task.DueDate)
+		fmt.Println("Status:", status)
+		fmt.Println(strings.Repeat("_", 20))
+	}
+
 }
 
 func viewAllCompleted() {

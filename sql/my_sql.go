@@ -43,3 +43,27 @@ func (d *Database) AddTask(task *userinterface.Todo) error {
 	return nil
 
 }
+
+func (d *Database) GetAllTasks() ([]*userinterface.Todo, error) {
+	query := "SELECT description, completed, due_date FROM tasks WHERE completed = 0 ORDER BY due_date ASC;"
+
+	rows, err := d.conn.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query tasks: %w", err)
+	}
+	defer rows.Close()
+
+	var tasks []*userinterface.Todo
+	for rows.Next() {
+		var task userinterface.Todo
+
+		err := rows.Scan(&task.Description, &task.Completed, &task.DueDate)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan task: %w", err)
+		}
+
+		tasks = append(tasks, &task)
+	}
+
+	return tasks, nil
+}
