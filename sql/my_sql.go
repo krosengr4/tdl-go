@@ -30,6 +30,54 @@ func (d *Database) Close() error {
 	return d.conn.Close()
 }
 
+func (d *Database) GetAllTasks() ([]*userinterface.Todo, error) {
+	query := "SELECT * FROM tasks ORDER BY due_date ASC;"
+
+	rows, err := d.conn.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query tasks: %w", err)
+	}
+	defer rows.Close()
+
+	var tasks []*userinterface.Todo
+	for rows.Next() {
+		var task userinterface.Todo
+
+		err := rows.Scan(&task.Id, &task.Description, &task.Completed, &task.DueDate)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan task: %w", err)
+		}
+
+		tasks = append(tasks, &task)
+	}
+
+	return tasks, nil
+}
+
+func (d *Database) GetAllPending() ([]*userinterface.Todo, error) {
+	query := "SELECT * FROM tasks WHERE completed = 0 ORDER BY due_date ASC;"
+
+	rows, err := d.conn.Query(query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query tasks: %w", err)
+	}
+	defer rows.Close()
+
+	var tasks []*userinterface.Todo
+	for rows.Next() {
+		var task userinterface.Todo
+
+		err := rows.Scan(&task.Id, &task.Description, &task.Completed, &task.DueDate)
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan task: %w", err)
+		}
+
+		tasks = append(tasks, &task)
+	}
+
+	return tasks, nil
+}
+
 func (d *Database) AddTask(task *userinterface.Todo) error {
 
 	query := "INSERT INTO tasks (description, completed, due_date) VALUES (?, ?, ?);"
@@ -65,50 +113,23 @@ func (d *Database) UpdateTaskCompletion(taskId int) error {
 	return nil
 }
 
-func (d *Database) GetAllPending() ([]*userinterface.Todo, error) {
-	query := "SELECT * FROM tasks WHERE completed = 0 ORDER BY due_date ASC;"
+func (d *Database) DeleteTask(taskId int) error {
+	query := "DELETE FROM tasks WHERE task_id = ?;"
 
-	rows, err := d.conn.Query(query)
+	result, err := d.conn.Exec(query, taskId)
 	if err != nil {
-		return nil, fmt.Errorf("failed to query tasks: %w", err)
-	}
-	defer rows.Close()
-
-	var tasks []*userinterface.Todo
-	for rows.Next() {
-		var task userinterface.Todo
-
-		err := rows.Scan(&task.Id, &task.Description, &task.Completed, &task.DueDate)
-		if err != nil {
-			return nil, fmt.Errorf("failed to scan task: %w", err)
-		}
-
-		tasks = append(tasks, &task)
+		return fmt.Errorf("failed to delete task: %w", err)
 	}
 
-	return tasks, nil
-}
-
-func (d *Database) GetAllTasks() ([]*userinterface.Todo, error) {
-	query := "SELECT * FROM tasks ORDER BY due_date ASC;"
-
-	rows, err := d.conn.Query(query)
+	rows, err := result.RowsAffected()
 	if err != nil {
-		return nil, fmt.Errorf("failed to query tasks: %w", err)
-	}
-	defer rows.Close()
-
-	var tasks []*userinterface.Todo
-	for rows.Next() {
-		var task userinterface.Todo
-
-		err := rows.Scan(&task.Id, &task.Description, &task.Completed, &task.DueDate)
-		if err != nil {
-			return nil, fmt.Errorf("failed to scan task: %w", err)
-		}
-
-		tasks = append(tasks, &task)
+		return fmt.Errorf("failed to get rows affected: %w", err)
 	}
 
-	return tasks, nil
+	if rows == 0 {
+		return fmt.Errorf("could not delete, no task found with that ID: %w", err)
+	}
+
+	fmt.Println("Task was successfully deleted!")
+	return nil
 }

@@ -54,6 +54,8 @@ func main() {
 			viewAllTasks()
 		case 4:
 			viewAllPending()
+		case 5:
+			deleteTask()
 		case 0:
 			fmt.Println("Goodbye!")
 			ifContinue = false
@@ -120,6 +122,19 @@ func viewAllPending() {
 	}
 
 	printData(allUnfinished)
+}
+
+func deleteTask() {
+	viewAllTasks()
+
+	fmt.Println("Enter the ID of the task you want to delete:")
+	var taskId int
+	fmt.Scanln(&taskId)
+
+	err := db.DeleteTask(taskId)
+	if err != nil {
+		fmt.Println("ERROR! Could not delete that task:", err)
+	}
 }
 
 func printData(tasks []*userinterface.Todo) {

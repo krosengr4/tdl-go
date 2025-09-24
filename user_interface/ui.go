@@ -13,7 +13,7 @@ func DisplayMain() int {
 	fmt.Println(strings.Repeat("_", 50))
 	fmt.Println("\n---OPTIONS---")
 	fmt.Println(strings.Repeat("_", 20))
-	fmt.Println("1 - Add A New Task\n2 - Check Off A Task\n3 - View All Tasks\n4 - View All Pending Tasks\n0 - Exit")
+	fmt.Println("1 - Add A New Task\n2 - Check Off A Task\n3 - View All Tasks\n4 - View All Pending Tasks\n5 - Delete A Task\n0 - Exit")
 
 	fmt.Println("Enter option:")
 	var userChoice int
@@ -29,8 +29,6 @@ type Todo struct {
 	DueDate     time.Time
 }
 
-// todo: Look at bufio.Scanner to better get user input
-
 func DisplayAddTask() *Todo {
 
 	scanner := bufio.NewScanner(os.Stdin)
@@ -42,7 +40,7 @@ func DisplayAddTask() *Todo {
 	scanner.Scan()
 	description := scanner.Text()
 
-	dayDue := utils.GetValidatedNumber("Enter the day of the month your task is due (numerically):\n", 1, 31)
+	dayDue := utils.GetValidatedNumber("Enter the day your task is due (numerically):\n", 1, 31)
 	monthDue := utils.GetValidatedNumber("Enter the month your task is due (numerically):\n", 1, 12)
 	yearDue := utils.GetValidatedNumber("Enter the year your task is due:\n", 1999, 50000)
 
