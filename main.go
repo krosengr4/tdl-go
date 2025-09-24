@@ -2,10 +2,25 @@ package main
 
 import (
 	"fmt"
+	"log"
+	database "tdl-go/sql"
 	userinterface "tdl-go/user_interface"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
+var db *database.Database
+
 func main() {
+
+	// Initialize database connection
+	var err error
+	db, err = database.GetConnection("root", "611854Kr", "localhost", "3306", "todo_db")
+	if err != nil {
+		log.Fatal("Failed to connect to the database:", err)
+	}
+	defer db.Close()
+
 	fmt.Printf("\t-----WELCOME TO YOUR TO DO LIST-----\n")
 
 	ifContinue := true
@@ -33,7 +48,17 @@ func main() {
 }
 
 func addNewTask() {
-	fmt.Println("Add a new task")
+	newTask := userinterface.DisplayAddTask()
+
+	// Add task to database
+	if err := db.AddTask(newTask); err != nil {
+		fmt.Println("Error adding task to database:", err)
+		return
+	}
+
+	fmt.Println("Description:", newTask.Description)
+	fmt.Println("Completed:", newTask.Completed)
+	fmt.Println("Due Date:", newTask.DueDate.Format("2006-01-02"))
 }
 
 func checkOffTask() {
