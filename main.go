@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"tdl-go/config"
 	database "tdl-go/sql"
 	userinterface "tdl-go/user_interface"
 
@@ -13,11 +14,26 @@ var db *database.Database
 
 func main() {
 
-	// Initialize database connection
+	// Load enviornment variables from .env
+	if err := config.LoadEnv(".env"); err != nil {
+		log.Printf("Warning: Could not load .env file: %v", err)
+		log.Println("Using default/system environment variables...")
+	}
+
+	// Get database configurations from env variables
+	dbConfig := config.GetDatabaseConfig()
+
+	// Initialize database connection with configuration
 	var err error
-	db, err = database.GetConnection("root", "611854Kr", "localhost", "3306", "todo_db")
+	db, err = database.GetConnection(
+		dbConfig.Username,
+		dbConfig.Password,
+		dbConfig.Host,
+		dbConfig.Port,
+		dbConfig.DBName,
+	)
 	if err != nil {
-		log.Fatal("Failed to connect to the database:", err)
+		log.Fatal("Failed to connect to database:", err)
 	}
 	defer db.Close()
 
