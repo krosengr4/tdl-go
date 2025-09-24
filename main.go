@@ -74,8 +74,8 @@ func addNewTask() {
 	}
 
 	fmt.Println("Description:", newTask.Description)
-	fmt.Println("Completed:", newTask.Completed)
-	fmt.Println("Due Date:", newTask.DueDate.Format("2006-01-02"))
+	fmt.Println("Status: ❌ Pending")
+	fmt.Println("Due Date:", newTask.DueDate.Format("02-01-2006"))
 }
 
 func checkOffTask() {
@@ -95,18 +95,20 @@ func viewAllTasks() {
 		return
 	}
 
-	for i, task := range allTasks {
-		status := "❌ Pending"
-		if task.Completed {
-			status = "✅ Completed"
-		}
+	// for _, task := range allTasks {
+	// 	status := "❌ Pending"
+	// 	if task.Completed {
+	// 		status = "✅ Completed"
+	// 	}
 
-		fmt.Printf("---TASK %d---\n", i+1)
-		fmt.Println("Description:", task.Description)
-		fmt.Println("Due Date:", task.DueDate)
-		fmt.Println("Status:", status)
-		fmt.Println(strings.Repeat("_", 20))
-	}
+	// 	fmt.Printf("---TASK ID: %d---\n", task.Id)
+	// 	fmt.Println("Description:", task.Description)
+	// 	fmt.Println("Due Date:", task.DueDate.Format("02-01-2006"))
+	// 	fmt.Println("Status:", status)
+	// 	fmt.Println(strings.Repeat("_", 20))
+	// }
+
+	printData(allTasks)
 
 }
 
@@ -123,13 +125,31 @@ func viewAllPending() {
 		return
 	}
 
-	for i, task := range allUnfinished {
-		status := "❌ Pending"
+	// for _, task := range allUnfinished {
+	// 	status := "❌ Pending"
 
-		fmt.Printf("---TASK %d---\n", i+1)
+	// 	fmt.Printf("---TASK ID: %d---\n", task.Id)
+	// 	fmt.Println("Description:", task.Description)
+	// 	fmt.Println("Due Date:", task.DueDate.Format("02-01-2006"))
+	// 	fmt.Println("Status:", status)
+	// 	fmt.Println(strings.Repeat("_", 20))
+	// }
+
+	printData(allUnfinished)
+}
+
+func printData(tasks []*userinterface.Todo) {
+
+	for _, task := range tasks {
+		status := "❌ Pending"
+		if task.Completed {
+			status = "✅ Completed"
+		}
+
+		fmt.Printf("---TASK ID: %d---\n", task.Id)
 		fmt.Println("Description:", task.Description)
-		fmt.Println("Due Date:", task.DueDate)
+		fmt.Println("Due Date:", task.DueDate.Format("02-01-2006"))
 		fmt.Println("Status:", status)
-		fmt.Println(strings.Repeat("_", 20))
+		fmt.Println(strings.Repeat("_", 45))
 	}
 }

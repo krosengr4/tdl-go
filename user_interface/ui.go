@@ -10,7 +10,8 @@ import (
 )
 
 func DisplayMain() int {
-	fmt.Println("---OPTIONS---")
+	fmt.Println(strings.Repeat("_", 50))
+	fmt.Println("\n---OPTIONS---")
 	fmt.Println(strings.Repeat("_", 20))
 	fmt.Println("1 - Add A New Task\n2 - Check Off A Task\n3 - View All Tasks\n4 - View All Pending Tasks\n0 - Exit")
 
@@ -22,6 +23,7 @@ func DisplayMain() int {
 }
 
 type Todo struct {
+	Id          int
 	Description string
 	Completed   bool
 	DueDate     time.Time

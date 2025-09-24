@@ -44,8 +44,12 @@ func (d *Database) AddTask(task *userinterface.Todo) error {
 
 }
 
+// func (d *Database) UpdateTaskCompletion(description string) error {
+
+// }
+
 func (d *Database) GetAllPending() ([]*userinterface.Todo, error) {
-	query := "SELECT description, completed, due_date FROM tasks WHERE completed = 0 ORDER BY due_date ASC;"
+	query := "SELECT * FROM tasks WHERE completed = 0 ORDER BY due_date ASC;"
 
 	rows, err := d.conn.Query(query)
 	if err != nil {
@@ -57,7 +61,7 @@ func (d *Database) GetAllPending() ([]*userinterface.Todo, error) {
 	for rows.Next() {
 		var task userinterface.Todo
 
-		err := rows.Scan(&task.Description, &task.Completed, &task.DueDate)
+		err := rows.Scan(&task.Id, &task.Description, &task.Completed, &task.DueDate)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan task: %w", err)
 		}
@@ -69,7 +73,7 @@ func (d *Database) GetAllPending() ([]*userinterface.Todo, error) {
 }
 
 func (d *Database) GetAllTasks() ([]*userinterface.Todo, error) {
-	query := "SELECT description, completed, due_date FROM tasks ORDER BY due_date ASC;"
+	query := "SELECT * FROM tasks ORDER BY due_date ASC;"
 
 	rows, err := d.conn.Query(query)
 	if err != nil {
@@ -81,7 +85,7 @@ func (d *Database) GetAllTasks() ([]*userinterface.Todo, error) {
 	for rows.Next() {
 		var task userinterface.Todo
 
-		err := rows.Scan(&task.Description, &task.Completed, &task.DueDate)
+		err := rows.Scan(&task.Id, &task.Description, &task.Completed, &task.DueDate)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan task: %w", err)
 		}
