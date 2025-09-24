@@ -1,7 +1,10 @@
 package userinterface
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -24,32 +27,49 @@ type Todo struct {
 	DueDate     time.Time
 }
 
+// todo: Look at bufio.Scanner to better get user input
+
 func DisplayAddTask() *Todo {
+
+	scanner := bufio.NewScanner(os.Stdin)
+
 	fmt.Println("\t---Add A Task---")
 	fmt.Println(strings.Repeat("_", 30))
 
-	fmt.Println("Enter a description for your task:")
-	var description string
-	fmt.Scanln(&description)
+	fmt.Println("Enter your task description:")
+	scanner.Scan()
+	description := scanner.Text()
 
-	fmt.Println("Enter the day your task due (numerically):")
-	var dayDue int
-	fmt.Scanln(&dayDue)
+	dayDue := getValidatedNumber("Enter the day of the month your task is due (numerically):\n", 1, 31)
+	monthDue := getValidatedNumber("Enter the month your task is due (numerically):\n", 1, 12)
+	yearDue := getValidatedNumber("Enter the year your task is due:\n", 1999, 50000)
 
-	fmt.Println("Enter the month (numerically) your task is due (numerically):")
-	var monthDue time.Month
-	fmt.Scanln(&monthDue)
-
-	fmt.Println("Enter the year that your task is due:")
-	var yearDue int
-	fmt.Scanln(&yearDue)
-
-	dueDate := time.Date(yearDue, monthDue, dayDue, 0, 0, 0, 0, time.UTC)
+	dueDate := time.Date(yearDue, time.Month(monthDue), dayDue, 0, 0, 0, 0, time.UTC)
 
 	// Return the time.Time object directly in the struct
 	return &Todo{
 		Description: description,
 		Completed:   false,
 		DueDate:     dueDate,
+	}
+}
+
+// Helper function to get a validated number within range
+func getValidatedNumber(prompt string, min, max int) int {
+	scanner := bufio.NewScanner(os.Stdin)
+
+	for {
+		fmt.Print(prompt)
+		scanner.Scan()
+		input := strings.TrimSpace(scanner.Text())
+
+		if num, err := strconv.Atoi(input); err == nil {
+			if num >= min && num <= max {
+				return num
+			}
+			fmt.Printf("Number must be between %d and %d. Try again.\n", min, max)
+		} else {
+			fmt.Println("Invalid number. Please try again.")
+		}
 	}
 }
