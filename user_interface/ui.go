@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
+	"tdl-go/utils"
 	"time"
 )
 
@@ -40,9 +40,9 @@ func DisplayAddTask() *Todo {
 	scanner.Scan()
 	description := scanner.Text()
 
-	dayDue := getValidatedNumber("Enter the day of the month your task is due (numerically):\n", 1, 31)
-	monthDue := getValidatedNumber("Enter the month your task is due (numerically):\n", 1, 12)
-	yearDue := getValidatedNumber("Enter the year your task is due:\n", 1999, 50000)
+	dayDue := utils.GetValidatedNumber("Enter the day of the month your task is due (numerically):\n", 1, 31)
+	monthDue := utils.GetValidatedNumber("Enter the month your task is due (numerically):\n", 1, 12)
+	yearDue := utils.GetValidatedNumber("Enter the year your task is due:\n", 1999, 50000)
 
 	dueDate := time.Date(yearDue, time.Month(monthDue), dayDue, 0, 0, 0, 0, time.UTC)
 
@@ -51,25 +51,5 @@ func DisplayAddTask() *Todo {
 		Description: description,
 		Completed:   false,
 		DueDate:     dueDate,
-	}
-}
-
-// Helper function to get a validated number within range
-func getValidatedNumber(prompt string, min, max int) int {
-	scanner := bufio.NewScanner(os.Stdin)
-
-	for {
-		fmt.Print(prompt)
-		scanner.Scan()
-		input := strings.TrimSpace(scanner.Text())
-
-		if num, err := strconv.Atoi(input); err == nil {
-			if num >= min && num <= max {
-				return num
-			}
-			fmt.Printf("Number must be between %d and %d. Try again.\n", min, max)
-		} else {
-			fmt.Println("Invalid number. Please try again.")
-		}
 	}
 }
