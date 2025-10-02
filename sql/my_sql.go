@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"tdl-go/config"
 	userinterface "tdl-go/user_interface"
 )
 
@@ -10,9 +11,9 @@ type Database struct {
 	conn *sql.DB
 }
 
-func GetConnection(username, password, host, port, dbname string) (*Database, error) {
+func GetConnection(cfg *config.DatabaseConfig) (*Database, error) {
 	// Create connection string
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", username, password, host, port, dbname)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.DBName)
 
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {

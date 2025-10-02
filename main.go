@@ -15,26 +15,11 @@ var db *database.Database
 
 func main() {
 
-	// Load enviornment variables from .env
-	if err := config.LoadEnv(".env"); err != nil {
-		log.Printf("Warning: Could not load .env file: %v", err)
-		log.Println("Using default/system environment variables...")
-	}
-
-	// Get database configurations from env variables
-	dbConfig := config.GetDatabaseConfig()
-
 	// Initialize database connection with configuration
 	var err error
-	db, err = database.GetConnection(
-		dbConfig.Username,
-		dbConfig.Password,
-		dbConfig.Host,
-		dbConfig.Port,
-		dbConfig.DBName,
-	)
+	db, err = initDB()
 	if err != nil {
-		log.Fatal("Failed to connect to database:", err)
+		log.Fatalf("Failed to initialize database: %v", err)
 	}
 	defer db.Close()
 
@@ -66,6 +51,20 @@ func main() {
 		}
 	}
 
+}
+
+func initDB() (*database.Database, error) {
+	// Load enviornment variables from .env
+	if err := config.LoadEnv(".env"); err != nil {
+		log.Printf("Warning: Could not load .env file: %v", err)
+		log.Println("Using default/system environment variables...")
+	}
+
+	// Get database configurations from env variables
+	dbConfig := config.GetDatabaseConfig()
+
+	// Initialize database connection with configuration
+	return database.GetConnection(dbConfig)
 }
 
 func addNewTask() {
