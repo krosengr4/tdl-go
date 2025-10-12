@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
-	"tdl-go/utils"
 	"time"
 )
 
@@ -16,8 +16,12 @@ func DisplayMain() int {
 	fmt.Println("1 - Add A New Task\n2 - Check Off A Task\n3 - View All Tasks\n4 - View All Pending Tasks\n5 - View All Completed Tasks\n6 - Delete A Task\n0 - Exit")
 
 	fmt.Println("Enter option:")
+
 	var userChoice int
-	fmt.Scanln(&userChoice)
+	scanner := bufio.NewScanner(os.Stdin)
+	if scanner.Scan() {
+		userChoice, _ = strconv.Atoi(scanner.Text())
+	}
 
 	return userChoice
 }
@@ -40,11 +44,22 @@ func DisplayAddTask() *Todo {
 	scanner.Scan()
 	description := scanner.Text()
 
-	dayDue := utils.GetValidatedNumber("Enter the day your task is due (numerically):\n", 1, 31)
-	monthDue := utils.GetValidatedNumber("Enter the month your task is due (numerically):\n", 1, 12)
-	yearDue := utils.GetValidatedNumber("Enter the year your task is due:\n", 1999, 50000)
+	var dueDate time.Time
+	var err error
 
-	dueDate := time.Date(yearDue, time.Month(monthDue), dayDue, 0, 0, 0, 0, time.UTC)
+	for {
+		fmt.Println("Enter the due date (mm-dd-yyyy): ")
+		scanner.Scan()
+		userDueDate := strings.TrimSpace(scanner.Text())
+
+		dueDate, err = time.Parse("01-02-2006", userDueDate)
+		if err == nil {
+			break
+		} else {
+			fmt.Println("Invalid date format. Please use mm-dd-yyyy")
+		}
+
+	}
 
 	// Return the time.Time object directly in the struct
 	return &Todo{
