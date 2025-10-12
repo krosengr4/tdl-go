@@ -85,9 +85,13 @@ func checkOffTask() {
 	viewByStatus(0)
 	fmt.Println("\n" + strings.Repeat("_", 45))
 
-	fmt.Println("Enter the ID of the task you have completed:")
+	fmt.Println("Enter the ID of the task you have completed (enter 0 to go back): ")
 	var taskId int
 	fmt.Scanln(&taskId)
+
+	if taskId == 0 {
+		return
+	}
 
 	err := db.UpdateTaskCompletion(taskId)
 	if err != nil {
@@ -128,9 +132,13 @@ func viewByStatus(status int) {
 func deleteTask() {
 	viewAllTasks()
 
-	fmt.Println("Enter the ID of the task you want to delete:")
+	fmt.Println("Enter the ID of the task you want to delete (press 0 to go back): ")
 	var taskId int
 	fmt.Scanln(&taskId)
+
+	if taskId == 0 {
+		return
+	}
 
 	err := db.DeleteTask(taskId)
 	if err != nil {
